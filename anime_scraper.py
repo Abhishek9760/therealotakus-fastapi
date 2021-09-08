@@ -17,6 +17,7 @@ class AnimeScraper:
         self.episode_gateway_url = "https://ajax.gogo-load.com/ajax/load-list-episode?ep_start=0&ep_end={total_ep}&id={movie_id}&default_ep=0&alias={alias_name}"
         self.episodes = None
         self.alias_name = None
+        self.anime_info = None
         self.anime_list = self.scrape(query=query)
 
     def __iter__(self):
@@ -122,6 +123,7 @@ class AnimeScraper:
         movie_id = tree.xpath("//input[@id='movie_id']//@value")[0]
         alias_name = tree.xpath("//input[@id='alias_anime']//@value")[0]
         self.alias_name = alias_name
+        self.anime_info = self.get_anime_info(tree)
         url = self.episode_gateway_url.format(
             total_ep=self.total_episodes, movie_id=movie_id, alias_name=alias_name
         )
@@ -140,3 +142,20 @@ class AnimeScraper:
         eps = dict(sorted(eps.items(), key=lambda item: float(item[0])))
         self.episodes = eps
         return self.episodes
+
+    def get_anime_info_query(self, tree, q):
+        xpath = f"//div[@class='anime_info_body_bg']//span[contains(text(), '{q.title()}')]//parent::p//text()[not(parent::span)]"
+        data = tree.xpath(xpath)
+        return self.clean_data(data)
+
+    def clean_data(self, data):
+        if data:
+            data = filter(lambda i: i.strip() != '', data)
+        return ''.join(data)
+
+    def get_anime_info(self, tree):
+        info = ['released', 'plot_summary', 'genre', 'status', 'other_names']
+        data = {}
+        for i in info:
+            data[i] = self.get_anime_info_query(tree, q=i.split('_')[0])
+        return data
