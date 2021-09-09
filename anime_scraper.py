@@ -138,8 +138,11 @@ class AnimeScraper:
         ]
         ep_links = [self._refine_url(i.strip())
                     for i in tree.xpath("//a//@href")]
-        eps = dict(zip(ep_names, ep_links))
-        eps = dict(sorted(eps.items(), key=lambda item: float(item[0])))
+        eps = []
+        for name, url in zip(ep_names, ep_links):
+            d = dict()
+            d[name] = url
+            eps.append(d)
         self.episodes = eps
         return self.episodes
 
