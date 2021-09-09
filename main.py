@@ -27,9 +27,10 @@ async def search_anime(q: str):
 async def get_episodes(source: str):
     anime_obj = AnimeScraper()
     eps = anime_obj.get_episodes(source)
+    print(eps)
     info = anime_obj.anime_info
     return {
-        "episodes": eps,
+        "episodes": anime_obj.episodes,
         "info": info
     }
 

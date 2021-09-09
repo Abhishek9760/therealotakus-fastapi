@@ -15,7 +15,7 @@ class AnimeScraper:
         self.total_episodes = 0
         self.total_res = 0
         self.episode_gateway_url = "https://ajax.gogo-load.com/ajax/load-list-episode?ep_start=0&ep_end={total_ep}&id={movie_id}&default_ep=0&alias={alias_name}"
-        self.episodes = None
+        self.episodes = []
         self.alias_name = None
         self.anime_info = None
         self.anime_list = self.scrape(query=query)
@@ -120,31 +120,28 @@ class AnimeScraper:
     def get_episodes(self, source):
         res = requests.get(source)
         tree = html.fromstring(res.text)
+        total_episodes = tree.xpath(
+            "//ul[@id='episode_page']//li[last()]")[0].text_content().strip().split("-")[-1]
         movie_id = tree.xpath("//input[@id='movie_id']//@value")[0]
         alias_name = tree.xpath("//input[@id='alias_anime']//@value")[0]
-        self.alias_name = alias_name
         self.anime_info = self.get_anime_info(tree)
         url = self.episode_gateway_url.format(
-            total_ep=self.total_episodes, movie_id=movie_id, alias_name=alias_name
-        )
+            total_ep=total_episodes, movie_id=movie_id, alias_name=alias_name)
         return self.get_episodes_parse(url)
 
     def get_episodes_parse(self, url):
         res = requests.get(url)
         tree = html.fromstring(res.text)
-        ep_names = [
-            i.strip()
-            for i in tree.xpath("//div[@class='name']/text()[not(parent::span)]")
-        ]
+        ep_names = [i.strip() for i in tree.xpath(
+            "//div[@class='name']/text()[not(parent::span)]")]
         ep_links = [self._refine_url(i.strip())
                     for i in tree.xpath("//a//@href")]
-        eps = []
+        res = []
         for name, url in zip(ep_names, ep_links):
             d = dict()
             d[name] = url
-            eps.append(d)
-        eps.reverse()
-        self.episodes = eps
+            res.append(d)
+        self.episodes += res
         return self.episodes
 
     def get_anime_info_query(self, tree, q):
