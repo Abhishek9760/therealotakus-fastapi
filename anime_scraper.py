@@ -141,8 +141,7 @@ class AnimeScraper:
             d = dict()
             d[name] = url
             res.append(d)
-        self.episodes = res.reverse()
-
+        self.episodes = list(reversed(res))
         return self.episodes
 
     def get_anime_info_query(self, tree, q):
