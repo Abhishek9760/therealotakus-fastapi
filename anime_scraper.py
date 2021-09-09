@@ -143,6 +143,7 @@ class AnimeScraper:
             d = dict()
             d[name] = url
             eps.append(d)
+        eps.reverse()
         self.episodes = eps
         return self.episodes
 
