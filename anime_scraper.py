@@ -39,6 +39,7 @@ class AnimeScraper:
         anime_list = tree.xpath(
             "//div[@class='last_episodes']//ul")[0].xpath(".//li")
         self.total_res = len(anime_list)
+
         l = self.anime_list_items_parser(anime_list)
         return l
 
@@ -56,6 +57,7 @@ class AnimeScraper:
                 "name": name,
                 "source": source,
                 "total_episodes": total_episodes,
+                "anime_info": self.anime_info
             }
 
     def anime_list_item_parser(self, link):
@@ -69,6 +71,8 @@ class AnimeScraper:
             .strip()
             .split("-")[-1]
         )
+
+        self.anime_info = self.get_anime_info(tree)
         return total_episodes
 
     def scrape(self, service="gogo", query=""):
