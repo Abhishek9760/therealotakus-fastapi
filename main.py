@@ -27,9 +27,7 @@ async def search_anime(q: str):
 async def get_episodes(source: str):
     anime_obj = AnimeScraper()
     eps = anime_obj.get_episodes(source)
-    return {
-        "episodes": anime_obj.episodes,
-    }
+    return anime_obj.episodes
 
 
 @app.get('/episode')
