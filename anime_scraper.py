@@ -135,6 +135,8 @@ class AnimeScraper:
 
     def get_episodes_parse(self, url):
         res = requests.get(url)
+        if not res.text:
+            return []
         tree = html.fromstring(res.text)
         ep_names = [i.strip() for i in tree.xpath(
             "//div[@class='name']/text()[not(parent::span)]")]
