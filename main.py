@@ -34,3 +34,9 @@ async def get_episodes(source: str):
 async def get_episode(episode_link: str):
     anime_obj = AnimeScraper()
     return anime_obj.get_download_link(episode_link)
+
+
+@app.get('/popular')
+async def get_popular():
+    anime_obj = AnimeScraper()
+    return anime_obj.get_popular()

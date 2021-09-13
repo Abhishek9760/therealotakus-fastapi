@@ -166,3 +166,10 @@ class AnimeScraper:
         for i in info:
             data[i] = self.get_anime_info_query(tree, q=i.split('_')[0])
         return data
+
+    def get_popular(self, page=1):
+        url = "https://gogoanime.pe/popular.html?page={page}".format(page=page)
+        res = requests.get(url)
+        tree = html.fromstring(res.text)
+        items = tree.xpath("//div[@class='last_episodes']//li")
+        return self.anime_list_items_parser(items)
