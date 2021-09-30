@@ -2,9 +2,7 @@ import requests
 from lxml import html
 from urllib.parse import urlparse
 
-
 SERVICES = {"gogo": "https://gogoanime.pe//search.html?keyword={query}"}
-
 
 class AnimeScraper:
     def __init__(self, service="gogo", query=""):
