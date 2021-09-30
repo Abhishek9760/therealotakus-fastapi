@@ -95,19 +95,20 @@ class AnimeScraper:
     def parse_download_link(self, link):
         res = requests.get(link)
         tree = html.fromstring(res.text)
-        download_links = tree.xpath("//div[@class='mirror_link']")[0].xpath(
-            ".//a//@href"
-        )
-        quality = tree.xpath(
-            "//div[@class='mirror_link']")[0].xpath(".//a//text()")
-        quality = [self._parse_quality_name(i) for i in quality]
+        mirrors = tree.xpath("//div[@class='mirror_link']")
+        download_opt = []
+        for m in mirrors:
+            download_opt.append(self.get_mirror(m))
+        return download_opt
+        
+    def get_mirror(self, mirror):
+        download_links = mirror.xpath('.//div[@class="dowload"]//a//@href')
+        quality = mirror.xpath('.//div[@class="dowload"]//a//text()')
+        quality = [self._parse_quality_name(q) for q in quality]
         return dict(zip(quality, download_links))
 
     def _parse_quality_name(self, text):
-        i1 = text.index("P")
-        i2 = text.index("(")
-        res = text[i2 + 1: i1 + 1]
-        return res
+        return text.replace("Download", "").replace(" ", "").strip()
 
     def _refine_url(self, url):
         if self._check_url(url):
