@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from enum import Enum
 from anime_scraper import AnimeScraper
 from typing import Optional
-from functions import xstream, streamsb
+from functions import streamsb
 
 app = FastAPI()
 
@@ -37,13 +37,9 @@ async def get_episode(episode_link: str):
     download_links = anime_obj.get_download_link(episode_link)
     mirrors = download_links[1]
     streamsb_link = mirrors.get('StreamSB')
-    xstreamcdn_link = mirrors.get('Xstreamcdn')
     if streamsb_link:
         streamsb_urls = streamsb.get_streamsb(streamsb_link)
         download_links[1]["StreamSB"] = streamsb_urls
-    # if xstreamcdn_link:
-    #     xstream_urls = xstream.get_links(xstreamcdn_link)
-    #     download_links[1]["Xstreamcdn"] = xstream_urls
     return download_links
 
 
