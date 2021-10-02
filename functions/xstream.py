@@ -6,11 +6,11 @@ def get_links(stream_url):
     id_ = urlparse(stream_url).path.split('/')[-1]
     url = XSTREAM_CDN_LINK.format(id=id_)
     print(url)
-    res = requests.post(url, headers={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36", "referrer": stream_url})
+    res = requests.post(url,headers={ "referrer": stream_url})
     urls = json.loads(res.text).get('data')
     for i in range(len(urls)):
         url = urls[i]
         link = url.get('file')
-        r = requests.get(link, allow_redirects=False)
+        r = requests.get(link, allow_redirects=False, headers={"referrer":"https://embedsito.com/"})
         urls[i]["file"] = r.headers.get('Location')
     return urls
