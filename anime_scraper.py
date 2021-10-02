@@ -127,7 +127,6 @@ class AnimeScraper:
             "//ul[@id='episode_page']//li[last()]")[0].text_content().strip().split("-")[-1]
         movie_id = tree.xpath("//input[@id='movie_id']//@value")[0]
         alias_name = tree.xpath("//input[@id='alias_anime']//@value")[0]
-        # self.anime_info = self.get_anime_info(tree)
         url = self.episode_gateway_url.format(
             total_ep=total_episodes, movie_id=movie_id, alias_name=alias_name)
         return self.get_episodes_parse(url)
@@ -172,3 +171,5 @@ class AnimeScraper:
         tree = html.fromstring(res.text)
         items = tree.xpath("//div[@class='last_episodes']//li")
         return self.anime_list_items_parser(items)
+    
+
