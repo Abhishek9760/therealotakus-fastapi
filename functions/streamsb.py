@@ -30,6 +30,8 @@ def generate_urls(modes, hash_, id_):
         url = STREAMSB_DOWNLOAD_LINK.format(mode=mode, hash=hash_, id=id_)
         res = requests.get(url)
         tree = html.fromstring(res.text)
-        direct_link = tree.xpath("//span[contains(@style,'background')]//a//@href")[0]
+        direct_link = tree.xpath("//span[contains(@style,'background')]//a//@href")
+        if len(direct_link) > 0:
+            direct_link = direct_link[0]
         urls.append(direct_link)
     return urls
