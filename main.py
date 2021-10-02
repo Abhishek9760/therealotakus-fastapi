@@ -41,9 +41,9 @@ async def get_episode(episode_link: str):
     if streamsb_link:
         streamsb_urls = streamsb.get_streamsb(streamsb_link)
         download_links[1]["StreamSB"] = streamsb_urls
-    if xstreamcdn_link:
-        xstream_urls = xstream.get_links(xstreamcdn_link)
-        download_links[1]["Xstreamcdn"] = xstream_urls
+    # if xstreamcdn_link:
+    #     xstream_urls = xstream.get_links(xstreamcdn_link)
+    #     download_links[1]["Xstreamcdn"] = xstream_urls
     return download_links
 
 
