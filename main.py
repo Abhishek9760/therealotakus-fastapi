@@ -46,6 +46,11 @@ async def get_popular(page: Optional[int]=1):
     anime_obj = AnimeScraper()
     return anime_obj.get_popular(page=page)
 
+@app.get('/anime')
+async def get_anime_info(source: str):
+    anime_obj = AnimeScraper()
+    return anime_obj.anime_list_item_parser(source)
+
 @app.get('/genre')
 async def get_genre_list():
     anime_obj = AnimeScraper()

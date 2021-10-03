@@ -47,15 +47,15 @@ class AnimeScraper:
             name = item.xpath(".//p[@class='name']//text()")[0]
             source = self._refine_url(item.xpath(
                 ".//p[@class='name']//@href")[0])
-            total_episodes = self.anime_list_item_parser(source)
+            # total_episodes = self.anime_list_item_parser(source)
             self.source = source
-            self.total_episodes = int(total_episodes)
+            # self.total_episodes = int(total_episodes)
             yield {
                 "image": image,
                 "name": name,
                 "source": source,
-                "total_episodes": total_episodes,
-                "anime_info": self.anime_info
+                # "total_episodes": total_episodes,
+                # "anime_info": self.anime_info
             }
 
     def anime_list_item_parser(self, link):
@@ -71,7 +71,10 @@ class AnimeScraper:
         )
 
         self.anime_info = self.get_anime_info(tree)
-        return total_episodes
+        return {
+            "total_episodes": total_episodes,
+            "anime_info": self.anime_info,
+        }
 
     def scrape(self, service="gogo", query=""):
         query = self.query or query
