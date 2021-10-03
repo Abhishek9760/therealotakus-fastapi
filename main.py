@@ -6,11 +6,9 @@ from functions import streamsb
 
 app = FastAPI()
 
-
 @app.get('/')
 async def home():
     return {'message': 'welcome'}
-
 
 @app.get("/search/{q}")
 async def search_anime(q: str):
@@ -37,13 +35,13 @@ async def get_episode(episode_link: str):
     download_links = anime_obj.get_download_link(episode_link)
     mirrors = download_links[1]
     streamsb_link = mirrors.get('StreamSB')
-    if streamsb_link:
+    if streamsb_link and not download_links[0]:
         streamsb_urls = streamsb.get_streamsb(streamsb_link)
         download_links[1]["StreamSB"] = streamsb_urls
     return download_links
 
 
 @app.get('/popular')
-async def get_popular():
+async def get_popular(page: Optional[int]=1):
     anime_obj = AnimeScraper()
-    return anime_obj.get_popular()
+    return anime_obj.get_popular(page=page)
