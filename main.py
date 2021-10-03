@@ -45,3 +45,15 @@ async def get_episode(episode_link: str):
 async def get_popular(page: Optional[int]=1):
     anime_obj = AnimeScraper()
     return anime_obj.get_popular(page=page)
+
+@app.get('/genre')
+async def get_genre_list():
+    anime_obj = AnimeScraper()
+    return anime_obj.get_genre_list()
+
+@app.get('/genre/{genre}')
+async def get_genre(genre: str, page: Optional[int]=1):
+    anime_obj = AnimeScraper()
+    formatted_genre = genre.lower().replace(' ', '-')
+    url = f"https://gogoanime.pe/genre/{formatted_genre}?page={page}"
+    return list(anime_obj.scrape_gogo_anime_list(url))

@@ -171,5 +171,12 @@ class AnimeScraper:
         tree = html.fromstring(res.text)
         items = tree.xpath("//div[@class='last_episodes']//li")
         return self.anime_list_items_parser(items)
+
+    def get_genre_list(self):
+        res = requests.get('https://gogoanime.pe')
+        tree = html.fromstring(res.text)
+        nav = tree.xpath("//nav[contains(@class, 'genre')]")[0]
+        genre = nav.xpath('.//li//a//text()')
+        return genre
     
 
