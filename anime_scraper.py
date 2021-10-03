@@ -53,7 +53,7 @@ class AnimeScraper:
             yield {
                 "image": image,
                 "name": name,
-                "source": source,
+                "source": source
                 # "total_episodes": total_episodes,
                 # "anime_info": self.anime_info
             }
@@ -69,11 +69,13 @@ class AnimeScraper:
             .strip()
             .split("-")[-1]
         )
+        self.get_episodes(tree)
 
         self.anime_info = self.get_anime_info(tree)
         return {
             "total_episodes": total_episodes,
             "anime_info": self.anime_info,
+            "episodes": self.episodes,
         }
 
     def scrape(self, service="gogo", query=""):
@@ -123,9 +125,9 @@ class AnimeScraper:
         except:
             return False
 
-    def get_episodes(self, source):
-        res = requests.get(source)
-        tree = html.fromstring(res.text)
+    def get_episodes(self, tree):
+        # res = requests.get(source)
+        # tree = html.fromstring(res.text)
         total_episodes = tree.xpath(
             "//ul[@id='episode_page']//li[last()]")[0].text_content().strip().split("-")[-1]
         movie_id = tree.xpath("//input[@id='movie_id']//@value")[0]

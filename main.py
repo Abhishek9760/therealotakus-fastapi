@@ -22,13 +22,6 @@ async def search_anime(q: str):
     return res
 
 
-@app.get("/episodes")
-async def get_episodes(source: str):
-    anime_obj = AnimeScraper()
-    eps = anime_obj.get_episodes(source)
-    return anime_obj.episodes
-
-
 @app.get('/episode')
 async def get_episode(episode_link: str):
     anime_obj = AnimeScraper()
@@ -39,7 +32,6 @@ async def get_episode(episode_link: str):
         streamsb_urls = streamsb.get_streamsb(streamsb_link)
         download_links[1]["StreamSB"] = streamsb_urls
     return download_links
-
 
 @app.get('/popular')
 async def get_popular(page: Optional[int]=1):
