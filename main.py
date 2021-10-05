@@ -10,6 +10,11 @@ app = FastAPI()
 async def home():
     return {'message': 'welcome'}
 
+
+@app.get('/app')
+async def get_app_info():
+    return {"message": "Welcome, Enjoy Anime in quality.", "show": True, "version":"1.5"}
+
 @app.get("/search/{q}")
 async def search_anime(q: str):
     anime_obj = AnimeScraper(query=q)
