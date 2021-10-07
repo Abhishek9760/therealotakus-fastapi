@@ -13,7 +13,7 @@ async def home():
 
 @app.get('/app')
 async def get_app_info():
-    return {"message": "", "show": False, "version":"1.5"}
+    return {"message": "Enjoy watching Anime for free :)", "show": True, "version":"1.5"}
 
 @app.get("/search/{q}")
 async def search_anime(q: str):
