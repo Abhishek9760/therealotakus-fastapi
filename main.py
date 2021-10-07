@@ -1,18 +1,51 @@
+import models
 from fastapi import FastAPI
 from enum import Enum
 from anime_scraper import AnimeScraper
 from typing import Optional
 from functions import streamsb
+from database import SessionLocal, engine
+from sqlalchemy.orm import Session
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    except:
+        db.close()
+
+def create_app(db: Session, message: str, show_message: bool, version: str):
+    db_app = models.App(message=message, show_message=show_message, version=version)
+    db.add(db_app)
+    db.commit()
+    db.refresh(db_app)
+    return db_app
+
+def get_app_data(db: Session):
+    return db.query(models.App).order_by(models.App.id.desc()).first()
+
 
 @app.get('/')
 async def home():
     return {'message': 'welcome'}
 
+@app.get('/app/info')
+async def get_app_info():
+    db = next(get_db())
+    data = get_app_data(db)
+    return {
+        "message":data.message,
+        "show_message": data.show_message,
+        "version": data.version
+    }
 
 @app.get('/app')
-async def get_app_info():
+async def set_app_info(message: str, show:bool, version:str):
+    create_app(next(get_db()), message, show, version)
     return {"message": "Enjoy watching Anime for free :)", "show": False, "version":"1.6"}
 
 @app.get("/search/{q}")
