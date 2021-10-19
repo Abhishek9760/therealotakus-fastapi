@@ -10,7 +10,10 @@ class App(Base):
     message = Column(String, index=True)
     show_message = Column(Boolean, index=True)
     version = Column(String, index=True)
-    # hashed_password = Column(String)
-    # is_active = Column(Boolean, default=True)
 
-    # items = relationship("Item", back_populates="owner")
+class AppInstall(Base):
+    __tablename__ = "app_install"
+
+    id = Column(Integer, primary_key=True, index=True)
+    total_install = Column(Integer, index=True)
+

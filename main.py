@@ -29,6 +29,21 @@ def get_app_data(db: Session):
     return db.query(models.App).order_by(models.App.id.desc()).first()
 
 
+def update_installs(db: Session):
+    try:
+        first_item =  db.query(models.AppInstall).first()
+        first_item.total_install += 1
+        db.commit()
+        db.refresh(first_item)
+    except:
+        db_app_install = models.AppInstall(total_install = 0)
+        db.add(db_app_install)
+        db.commit()
+        db.refresh(db_app_install)
+
+def get_app_update_installs(db: Session):
+    return db.query(models.AppInstall).first()
+
 @app.get('/')
 async def home():
     return {'message': 'welcome'}
@@ -47,6 +62,21 @@ async def get_app_info():
 async def set_app_info(message: str, show:bool, version:str):
     create_app(next(get_db()), message, show, version)
     return {"message": "Enjoy watching Anime for free :)", "show": False, "version":"1.6"}
+
+@app.get('/app/install')
+async def app_install():
+    db = next(get_db())
+    update_installs(db)
+    total_install = get_app_update_installs(db).total_install
+    return {'total_install': total_install}
+
+
+@app.get('/app/install/reset')
+async def app_install_reset():
+    db = next(get_db())
+    total_install = db.query(models.AppInstall).delete()
+    db.commit()
+    return {'status': 'done'}
 
 @app.get("/search/{q}")
 async def search_anime(q: str):
