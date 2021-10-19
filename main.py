@@ -64,12 +64,20 @@ async def set_app_info(message: str, show:bool, version:str):
     create_app(next(get_db()), message, show, version)
     return {"message": "Enjoy watching Anime for free :)", "show": False, "version":"1.6"}
 
-@app.get('/app/install')
+@app.get('/app/install/add')
 async def app_install():
     db = next(get_db())
     update_installs(db)
-    total_install = get_app_update_installs(db).total_install
-    return {'total_install': total_install}
+    return {'status': 'done'}
+
+@app.get('/app/install')
+async def get_app_install():
+    db = next(get_db())
+    total_install = get_app_update_installs(db)
+    if(total_install):
+        return {'total_install': total_install.total_install}
+    return {'status': 'go to /app/install/add first'}
+
 
 
 @app.get('/app/install/reset')
