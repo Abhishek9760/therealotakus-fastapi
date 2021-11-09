@@ -2,7 +2,7 @@ import requests
 from lxml import html
 from urllib.parse import urlparse
 
-SERVICES = {"gogo": "https://gogoanime.pe/search.html?keyword={query}"}
+SERVICES = {"gogo": "https://gogoanime.cm/search.html?keyword={query}"}
 
 class AnimeScraper:
     def __init__(self, service="gogo", query=""):
@@ -172,14 +172,14 @@ class AnimeScraper:
         return data
 
     def get_popular(self, page=1):
-        url = "https://gogoanime.pe/popular.html?page={page}".format(page=page)
+        url = "https://gogoanime.cm/popular.html?page={page}".format(page=page)
         res = requests.get(url, headers=self.headers)
         tree = html.fromstring(res.text)
         items = tree.xpath("//div[@class='last_episodes']//li")
         return self.anime_list_items_parser(items)
 
     def get_genre_list(self):
-        res = requests.get('https://gogoanime.pe', headers=self.headers)
+        res = requests.get('https://gogoanime.cm', headers=self.headers)
         tree = html.fromstring(res.text)
         nav = tree.xpath("//nav[contains(@class, 'genre')]")[0]
         genre = nav.xpath('.//li//a//text()')
