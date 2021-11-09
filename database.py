@@ -13,7 +13,7 @@ ssl_mode = urllib.parse.quote_plus(str(os.environ.get('ssl_mode','prefer')))
 SQLALCHEMY_DATABASE_URL = 'postgresql://{}:{}@{}:{}/{}?sslmode={}'.format(db_username, db_password, host_server, db_server_port, database_name, ssl_mode)
 
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

@@ -2,7 +2,7 @@ import requests
 from lxml import html
 from urllib.parse import urlparse
 
-SERVICES = {"gogo": "https://gogoanime.pe//search.html?keyword={query}"}
+SERVICES = {"gogo": "https://gogoanime.pe/search.html?keyword={query}"}
 
 class AnimeScraper:
     def __init__(self, service="gogo", query=""):
@@ -17,6 +17,7 @@ class AnimeScraper:
         self.alias_name = None
         self.anime_info = None
         self.anime_list = self.scrape(query=query)
+        self.headers = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"}
 
     def __iter__(self):
         return self
@@ -29,7 +30,7 @@ class AnimeScraper:
             return next(self.anime_list)
 
     def scrape_gogo_anime_list(self, url):
-        res = requests.get(url, headers={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"})
+        res = requests.get(url, headers=self.headers)
         if res.status_code != 200:
             raise ConnectionError("Your internet might be slow :(")
 
@@ -61,7 +62,7 @@ class AnimeScraper:
     def anime_list_item_parser(self, link):
         if not (link and self._check_url(link)):
             raise ValueError("Invalid link")
-        res = requests.get(link)
+        res = requests.get(link, headers=self.headers)
         tree = html.fromstring(res.text)
         total_episodes = (
             tree.xpath("//ul[@id='episode_page']//li[last()]")[0]
@@ -87,7 +88,7 @@ class AnimeScraper:
         return func(url)
 
     def get_download_link(self, url):
-        res = requests.get(url, headers={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"})
+        res = requests.get(url, headers=self.headers)
         if res.status_code != 200:
             raise ConnectionError("Your internet might be slow:(")
         tree = html.fromstring(res.text)
@@ -96,7 +97,7 @@ class AnimeScraper:
         return download_links
 
     def parse_download_link(self, link):
-        res = requests.get(link, headers={"user-agent":"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/95.0.4638.69 safari/537.36"})
+        res = requests.get(link, headers=self.headers)
         tree = html.fromstring(res.text)
         mirrors = tree.xpath("//div[@class='mirror_link']")
         download_opt = []
@@ -137,7 +138,7 @@ class AnimeScraper:
         return self.get_episodes_parse(url)
 
     def get_episodes_parse(self, url):
-        res = requests.get(url, headers={"user-agent":"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/95.0.4638.69 safari/537.36"})
+        res = requests.get(url, headers=self.headers)
         if not res.text:
             return []
         tree = html.fromstring(res.text)
@@ -172,13 +173,13 @@ class AnimeScraper:
 
     def get_popular(self, page=1):
         url = "https://gogoanime.pe/popular.html?page={page}".format(page=page)
-        res = requests.get(url, headers={"user-agent":"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/95.0.4638.69 safari/537.36"})
+        res = requests.get(url, headers=self.headers)
         tree = html.fromstring(res.text)
         items = tree.xpath("//div[@class='last_episodes']//li")
         return self.anime_list_items_parser(items)
 
     def get_genre_list(self):
-        res = requests.get('https://gogoanime.pe', headers={"user-agent":"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/95.0.4638.69 safari/537.36"})
+        res = requests.get('https://gogoanime.pe', headers=self.headers)
         tree = html.fromstring(res.text)
         nav = tree.xpath("//nav[contains(@class, 'genre')]")[0]
         genre = nav.xpath('.//li//a//text()')
