@@ -16,8 +16,8 @@ class AnimeScraper:
         self.episodes = []
         self.alias_name = None
         self.anime_info = None
-        self.anime_list = self.scrape(query=query)
         self.headers = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"}
+        self.anime_list = self.scrape(query=query)
 
     def __iter__(self):
         return self
